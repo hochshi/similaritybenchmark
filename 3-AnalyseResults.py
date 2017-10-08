@@ -10,6 +10,11 @@ random.seed(1)
 
 import scipy.stats
 
+# Added for parallelism
+from joblib import Parallel, delayed
+import multiprocessing
+num_cores = multiprocessing.cpu_count()
+
 def assignRanks(data):
     """
     >>> ans = assignRanks([(1.0, "A"), (1.0, "B"), (0.8, "C"), (0.8, "D"), (0.7, "E"), (0.5, "F")])
@@ -250,7 +255,8 @@ if __name__ == "__main__":
         doctest.testmod()
 
         minsize = 99999999
-        N = 1000
+        #N = 1000
+        N = 6
         for i in range(N):
             size = countlines(os.path.join(correlationdir, "%d" % i, "ecfp0.txt"))
             if size < minsize:

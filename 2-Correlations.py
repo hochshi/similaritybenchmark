@@ -3,6 +3,11 @@ import sys
 import glob
 import scipy.stats
 
+# Added for parallelism
+from joblib import Parallel, delayed
+import multiprocessing
+num_cores = multiprocessing.cpu_count()
+
 SIZE = 4
 
 def getCorrelations(fname, outfile):
@@ -16,19 +21,33 @@ def getCorrelations(fname, outfile):
                 corr = scipy.stats.spearmanr(ref_corr, similarities)
             f.write("%f\n" % corr[0])
 
+def run_iteration(benchmark,i):
+    print i,
+    if not os.path.isdir(os.path.join(benchmark, "correlations")):
+        os.mkdir(os.path.join(benchmark, "correlations"))
+    inputdir = os.path.join(benchmark, "similarities", "%d" % i)
+    outputdir = os.path.join(benchmark, "correlations", "%d" % i)
+    if not os.path.isdir(outputdir):
+        os.mkdir(outputdir)
+    for fname in glob.glob(os.path.join(inputdir, "*.txt")):
+        name = os.path.basename(fname)
+        getCorrelations(fname, os.path.join(outputdir, name))
+
 if __name__ == "__main__":
     for benchmark in ["SingleAssay", "MultiAssay"]:
         # Note that the following loop is completely parallelisable
         # e.g. you could run from 0->500 on one CPU and from 500->1000 on
         #      another to finish in half the time
-        for i in range(1000):
-            print i,
-            if not os.path.isdir(os.path.join(benchmark, "correlations")):
-                os.mkdir(os.path.join(benchmark, "correlations"))
-            inputdir = os.path.join(benchmark, "similarities", "%d" % i)
-            outputdir = os.path.join(benchmark, "correlations", "%d" % i)
-            if not os.path.isdir(outputdir):
-                os.mkdir(outputdir)
-            for fname in glob.glob(os.path.join(inputdir, "*.txt")):
-                name = os.path.basename(fname)
-                getCorrelations(fname, os.path.join(outputdir, name))
+        iters = range(6)
+        Parallel(n_jobs=num_cores)(delayed(run_iteration)(benchmark,i) for i in iters)
+        #for i in range(1000):
+        #    print i,
+        #    if not os.path.isdir(os.path.join(benchmark, "correlations")):
+        #        os.mkdir(os.path.join(benchmark, "correlations"))
+        #    inputdir = os.path.join(benchmark, "similarities", "%d" % i)
+        #    outputdir = os.path.join(benchmark, "correlations", "%d" % i)
+        #    if not os.path.isdir(outputdir):
+        #        os.mkdir(outputdir)
+        #    for fname in glob.glob(os.path.join(inputdir, "*.txt")):
+        #        name = os.path.basename(fname)
+        #        getCorrelations(fname, os.path.join(outputdir, name))

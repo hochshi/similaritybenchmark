@@ -9,6 +9,11 @@ from rdkit import Chem, DataStructs
 from rdkit.Chem import Descriptors
 from rdkit.Chem.Fraggle import FraggleSim
 
+# Added for parallelism
+from joblib import Parallel, delayed
+import multiprocessing
+num_cores = multiprocessing.cpu_count()
+
 def readBenchmark(fname):
     for line in open(fname):
         yield line.rstrip().split()
@@ -75,6 +80,16 @@ def get_rdkitmols(dataset):
                 mol = frags[0]
             tmp.append(mol)
         yield tmp
+        
+def run_iteration(benchmark,M):
+    print "\nITERATION %d\n" % M
+    filename = os.path.join(benchmark, "dataset", "%d.txt" % M)
+    dataset = list(readBenchmark(filename))
+
+    d = []
+    for data in dataset:
+        d.append([chembl.smiles_lookup[x] for x in data])
+    evaluate_similarity_method(d, os.path.join(benchmark, "similarities", str(M)))
 
 if __name__ == "__main__":
     for benchmark in ["SingleAssay", "MultiAssay"]:
@@ -83,12 +98,15 @@ if __name__ == "__main__":
         #      another to finish in half the time
         if not os.path.isdir(os.path.join(benchmark, "similarities")):
             os.mkdir(os.path.join(benchmark, "similarities"))
-        for M in range(1000):
-            print "\nITERATION %d\n" % M
-            filename = os.path.join(benchmark, "dataset", "%d.txt" % M)
-            dataset = list(readBenchmark(filename))
+        #iters = range(100);
+        iters = range(6);
+        Parallel(n_jobs=num_cores)(delayed(run_iteration)(benchmark,i) for i in iters)
+        #for M in range(1000):
+        #    print "\nITERATION %d\n" % M
+        #    filename = os.path.join(benchmark, "dataset", "%d.txt" % M)
+        #    dataset = list(readBenchmark(filename))
 
-            d = []
-            for data in dataset:
-                d.append([chembl.smiles_lookup[x] for x in data])
-            evaluate_similarity_method(d, os.path.join(benchmark, "similarities", str(M)))
+        #    d = []
+        #    for data in dataset:
+        #        d.append([chembl.smiles_lookup[x] for x in data])
+        #    evaluate_similarity_method(d, os.path.join(benchmark, "similarities", str(M)))
