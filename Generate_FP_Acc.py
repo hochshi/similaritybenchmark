@@ -60,7 +60,7 @@ def accfp(fpName, fpCalculator):
                 if (fp.GetNumOnBits() > 0):
                     non_zero = fp.GetOnBits()
                     for i in non_zero:
-                        acc[0, i] += 1
+                        acc[i] += 1
     save_sparse_matrix(fpName, sparse.coo_matrix(acc))
 
 if __name__ == "__main__":
