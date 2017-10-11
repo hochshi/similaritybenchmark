@@ -115,3 +115,6 @@ SingleAssay/
 
 # Generated fingerprint accumulators
 *.npy
+
+# IDE
+.idea

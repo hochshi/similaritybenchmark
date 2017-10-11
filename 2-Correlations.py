@@ -22,6 +22,7 @@ def getCorrelations(fname, outfile):
             f.write("%f\n" % corr[0])
 
 def run_iteration(benchmark,i):
+    print "Doing repetition %d out of 1000 of %s" % (i, benchmark)
     print i,
     if not os.path.isdir(os.path.join(benchmark, "correlations")):
         os.mkdir(os.path.join(benchmark, "correlations"))
@@ -38,7 +39,7 @@ if __name__ == "__main__":
         # Note that the following loop is completely parallelisable
         # e.g. you could run from 0->500 on one CPU and from 500->1000 on
         #      another to finish in half the time
-        iters = range(6)
+        iters = range(1000)
         Parallel(n_jobs=num_cores)(delayed(run_iteration)(benchmark,i) for i in iters)
         #for i in range(1000):
         #    print i,

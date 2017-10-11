@@ -40,7 +40,7 @@ def evaluate_similarity_method(dataset, resultsdir):
                 if fpName in ["ap", "tt"] or fpName.startswith("ecfc") or fpName.startswith("fcfc"):
                     tanimoto = DataStructs.DiceSimilarity(ref_fp, sfp)
                 else:
-                    tanimoto = DataStructs.FingerprintSimilarity(ref_fp, sfp)
+                    tanimoto = DataStructs.cDataStructs.TanimotoSimilarity(ref_fp, sfp)
                 tanimotos.append(tanimoto)
 
             label = fpName
@@ -98,8 +98,7 @@ if __name__ == "__main__":
         #      another to finish in half the time
         if not os.path.isdir(os.path.join(benchmark, "similarities")):
             os.mkdir(os.path.join(benchmark, "similarities"))
-        #iters = range(100);
-        iters = range(6);
+        iters = range(1000);
         Parallel(n_jobs=num_cores)(delayed(run_iteration)(benchmark,i) for i in iters)
         #for M in range(1000):
         #    print "\nITERATION %d\n" % M

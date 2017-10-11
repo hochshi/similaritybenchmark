@@ -255,8 +255,7 @@ if __name__ == "__main__":
         doctest.testmod()
 
         minsize = 99999999
-        #N = 1000
-        N = 6
+        N = 1000
         for i in range(N):
             size = countlines(os.path.join(correlationdir, "%d" % i, "ecfp0.txt"))
             if size < minsize:
