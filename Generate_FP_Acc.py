@@ -19,6 +19,7 @@ def load_sparse_matrix(filename):
     return z
 
 def resize_acc(acc, newSize):
+    print "This shouldn't happen - resizing the acc matrix"
     mat = acc.tocoo()
     return sparse.coo_matrix((mat.data, (mat.row, mat.col)), shape=(1, newSize+1e9)).tocsr()
 
