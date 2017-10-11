@@ -1,5 +1,4 @@
 import os
-import csv
 import cPickle as pickle
 from rdkit import Chem
 import gzip

@@ -29,7 +29,6 @@ def accfp(fpName, fpCalculator):
     print "Doing fingerprint %s" % fpName
     if os.path.isfile('%s.npz' % fpName):
         return
-    acc = sparse.coo_matrix((1, 1))
     init_fp = fpCalculator(Chem.MolFromSmiles(init_smile))
     if fpName in ["ap", "tt"] or fpName.startswith("ecfc") \
             or fpName.startswith("fcfc") or fpName.startswith("nc_"):
@@ -47,13 +46,12 @@ def accfp(fpName, fpCalculator):
                 for key, val in non_zero.iteritems():
                     acc[0, key] += val
     else:
-        col = init_fp.GetOnBits()
-        data = [1]*len(col)
-        row = [0]*len(col)
-        max_col = 1025
+        max_col = 1024
         if fpName.startswith("lecfp") or fpName == "laval":
-            max_col = 16385
-        acc = sparse.coo_matrix((data, (row, col)), shape=(1, max_col)).tocsr()
+            max_col = 16384
+        acc = np.zeros(max_col)
+        for i in init_fp.GetOnBits():
+            acc[i] += 1
         for smile in all_smiles:
             mol = Chem.MolFromSmiles(smile)
             if mol is not None:
@@ -61,8 +59,8 @@ def accfp(fpName, fpCalculator):
                 if (fp.GetNumOnBits() > 0):
                     non_zero = fp.GetOnBits()
                     for i in non_zero:
-                        acc[1, i] += 1
-    save_sparse_matrix(fpName, acc.tocoo())
+                        acc[0, i] += 1
+    save_sparse_matrix(fpName, sparse.coo_matrix(acc))
 
 if __name__ == "__main__":
     fpName = argv[1]

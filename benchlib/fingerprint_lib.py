@@ -7,8 +7,6 @@ from rdkit import Chem
 from rdkit.Chem import MACCSkeys, AllChem
 from rdkit.Avalon import pyAvalonTools as fpAvalon
 from rdkit.Chem.AtomPairs import Pairs, Torsions
-from rdkit.Chem.Fingerprints import FingerprintMols
-from rdkit.Chem.ChemicalFeatures import BuildFeatureFactory
 from rdkit.Chem import rdMolDescriptors
 
 # implemented fingerprints:
