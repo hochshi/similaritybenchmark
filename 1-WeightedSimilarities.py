@@ -91,7 +91,7 @@ def evaluate_similarity_method(dataset, resultsdir):
     writer = Writer(resultsdir)
     for i, d in enumerate(get_rdkitmols(dataset)):
         for fpName, fpCalculator in flib.fpdict.iteritems():
-            print "Doing fingerprint %s" % fpName
+            #print "Doing fingerprint %s" % fpName
             wv = loadWeights(fpName)
             ref_mol = d[0]
             # ref_fp = fpCalculator(ref_mol)
@@ -153,7 +153,7 @@ def get_rdkitmols(dataset):
         yield tmp
 
 def run_iteration(benchmark,M):
-    print "\nITERATION %d\n" % M
+    #print "\nITERATION %d\n" % M
     filename = os.path.join(benchmark, "dataset", "%d.txt" % M)
     dataset = list(readBenchmark(filename))
 
