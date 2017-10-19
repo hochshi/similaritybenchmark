@@ -1,13 +1,13 @@
 import os
-import sys
-import cPickle as pickle
-import itertools
-from collections import defaultdict, Counter
+#import sys
+#import cPickle as pickle
+#import itertools
+#from collections import defaultdict, Counter
 import benchlib.chembl as chembl
 import benchlib.fingerprint_lib as flib # From benchmarking platform
-from rdkit import Chem, DataStructs
-from rdkit.Chem import Descriptors
-from rdkit.Chem.Fraggle import FraggleSim
+from rdkit import Chem #, DataStructs
+#from rdkit.Chem import Descriptors
+#from rdkit.Chem.Fraggle import FraggleSim
 import numpy as np
 import scipy.sparse as sp
 from sys import argv
