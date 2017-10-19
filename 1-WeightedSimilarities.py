@@ -11,7 +11,6 @@ from rdkit.Chem.Fraggle import FraggleSim
 import numpy as np
 import scipy.sparse as sp
 from sys import argv
-from memory_profiler import profile
 
 # Added for parallelism
 from joblib import Parallel, delayed
@@ -153,7 +152,6 @@ def get_rdkitmols(dataset):
             tmp.append(mol)
         yield tmp
 
-@profile
 def run_iteration(benchmark,M):
     print "\nITERATION %d\n" % M
     filename = os.path.join(benchmark, "dataset", "%d.txt" % M)
