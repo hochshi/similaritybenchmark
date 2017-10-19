@@ -48,7 +48,7 @@ def accfp(fpName, fpCalculator):
                     acc[0, key] += val
     else:
         max_col = 1024
-        if fpName.startswith("lecfp") or fpName == "laval":
+        if fpName.startswith("lecfp") or fpName.startswith("lfcfp") or fpName == "laval":
             max_col = 16384
         acc = np.zeros(max_col)
         for i in init_fp.GetOnBits():

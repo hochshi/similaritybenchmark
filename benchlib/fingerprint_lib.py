@@ -36,12 +36,12 @@ fpdict['ecfp6'] = lambda m: AllChem.GetMorganFingerprintAsBitVect(m, 3, nBits=nb
 fpdict['nc_ecfc0'] = lambda m: AllChem.GetMorganFingerprint(m, 0, useCounts=False)
 fpdict['nc_ecfc2'] = lambda m: AllChem.GetMorganFingerprint(m, 1, useCounts=False)
 fpdict['nc_ecfc4'] = lambda m: AllChem.GetMorganFingerprint(m, 2, useCounts=False)
-fpdict['nc_ecfc6'] = lambda m: AllChem.GetMorganFingerprint(m, 3, useCounts=False)
+#fpdict['nc_ecfc6'] = lambda m: AllChem.GetMorganFingerprint(m, 3, useCounts=False)
 # Return value is RDKit::SparseIntVect<unsigned int>
 fpdict['ecfc0'] = lambda m: AllChem.GetMorganFingerprint(m, 0)
 fpdict['ecfc2'] = lambda m: AllChem.GetMorganFingerprint(m, 1)
 fpdict['ecfc4'] = lambda m: AllChem.GetMorganFingerprint(m, 2)
-fpdict['ecfc6'] = lambda m: AllChem.GetMorganFingerprint(m, 3)
+#fpdict['ecfc6'] = lambda m: AllChem.GetMorganFingerprint(m, 3)
 # Return value is ExplicitBitVect
 fpdict['fcfp2'] = lambda m: AllChem.GetMorganFingerprintAsBitVect(m, 1, useFeatures=True, nBits=nbits)
 fpdict['fcfp4'] = lambda m: AllChem.GetMorganFingerprintAsBitVect(m, 2, useFeatures=True, nBits=nbits)
