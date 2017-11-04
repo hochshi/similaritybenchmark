@@ -1,5 +1,5 @@
 import os
-#import sys
+import sys
 #import cPickle as pickle
 #import itertools
 #from collections import defaultdict, Counter
@@ -17,6 +17,8 @@ from joblib import Parallel, delayed
 import multiprocessing
 num_cores = multiprocessing.cpu_count()
 
+local_location = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+
 def check_sparse(name):
     if name in ["ap", "tt"] or name.startswith("ecfc") \
             or name.startswith("fcfc") or name.startswith("nc_"):
@@ -24,7 +26,7 @@ def check_sparse(name):
     return False
 
 def load_sparse_matrix(fpName):
-    y = np.load("%s.npz" % fpName)
+    y = np.load(os.path.join(local_location, "%s.npz" % fpName))
     z = sp.coo_matrix((y['data'], (y['row'], y['col'])), shape=y['shape'], dtype=np.float64).tocsr()
     if check_sparse(fpName):
         return z
@@ -168,11 +170,11 @@ if __name__ == "__main__":
         # Note that the following loop is completely parallelisable
         # e.g. you could run from 0->500 on one CPU and from 500->1000 on
         #      another to finish in half the time
-        if not os.path.isdir(os.path.join(benchmark, "similarities")):
-            os.mkdir(os.path.join(benchmark, "similarities"))
+        if not os.path.isdir(os.path.join(local_location, benchmark, "similarities")):
+            os.mkdir(os.path.join(local_location, benchmark, "similarities"))
         #iters = range(1000);
         #Parallel(n_jobs=num_cores)(delayed(run_iteration)(benchmark,i) for i in iters)
-        run_iteration(benchmark, i)
+        run_iteration(os.path.join(local_location, benchmark), i)
         #for M in range(1000):
         #    print "\nITERATION %d\n" % M
         #    filename = os.path.join(benchmark, "dataset", "%d.txt" % M)
