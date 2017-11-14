@@ -23,7 +23,7 @@ def getCorrelations(fname, outfile):
 
 def run_iteration(benchmark,i):
     print "Doing repetition %d out of 1000 of %s" % (i, benchmark)
-    print i,
+    #print i,
     if not os.path.isdir(os.path.join(benchmark, "correlations")):
         os.mkdir(os.path.join(benchmark, "correlations"))
     inputdir = os.path.join(benchmark, "similarities", "%d" % i)
