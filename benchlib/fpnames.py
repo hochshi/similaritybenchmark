@@ -12,5 +12,8 @@ fpnames["laval"] = "LAvalon"
 fpnames["hashtt"] = "HashTT"
 fpnames["hashap"] = "HashAP"
 
+for key, val in fpnames.iteritems():
+    fpnames["w"+key] = "w"+val
+
 if __name__ == "__main__":
     print fpnames, len(fpnames)

@@ -12,12 +12,12 @@ def load_chembl():
     return smiles_lookup
 
 
-#here = os.path.dirname(os.path.realpath(__file__))
-here = os.getcwd()
-if os.path.isfile(os.path.join(here, 'benchlib', 'chembl_20.smi.pickle')):
-    with open(os.path.join(here, 'benchlib', 'chembl_20.smi.pickle'), 'rb') as handle:
+here = os.path.dirname(os.path.realpath(__file__))
+#here = os.getcwd()
+if os.path.isfile(os.path.join(here, 'chembl_20.smi.pickle')):
+    with open(os.path.join(here, 'chembl_20.smi.pickle'), 'rb') as handle:
         smiles_lookup = pickle.load(handle)
 else:
     smiles_lookup = load_chembl()
-    with open(os.path.join(here, 'benchlib', 'chembl_20.smi.pickle'), 'wb') as handle:
+    with open(os.path.join(here, 'chembl_20.smi.pickle'), 'wb') as handle:
         pickle.dump(smiles_lookup, handle, protocol=pickle.HIGHEST_PROTOCOL)
