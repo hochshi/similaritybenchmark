@@ -41,7 +41,7 @@ fpdict['nc_ecfc4'] = lambda m: AllChem.GetMorganFingerprint(m, 2, useCounts=Fals
 fpdict['ecfc0'] = lambda m: AllChem.GetMorganFingerprint(m, 0)
 fpdict['ecfc2'] = lambda m: AllChem.GetMorganFingerprint(m, 1)
 fpdict['ecfc4'] = lambda m: AllChem.GetMorganFingerprint(m, 2)
-#fpdict['ecfc6'] = lambda m: AllChem.GetMorganFingerprint(m, 3)
+fpdict['ecfc6'] = lambda m: AllChem.GetMorganFingerprint(m, 3)
 # Return value is ExplicitBitVect
 fpdict['fcfp2'] = lambda m: AllChem.GetMorganFingerprintAsBitVect(m, 1, useFeatures=True, nBits=nbits)
 fpdict['fcfp4'] = lambda m: AllChem.GetMorganFingerprintAsBitVect(m, 2, useFeatures=True, nBits=nbits)
