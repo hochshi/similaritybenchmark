@@ -15,9 +15,10 @@ from sys import argv
 # Added for parallelism
 from joblib import Parallel, delayed
 import multiprocessing
-num_cores = multiprocessing.cpu_count()
+num_cores = multiprocessing.cpu_count()-1
 
-local_location = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+#local_location = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+local_location = '/Users/sh/Code/similaritybenchmark'
 
 def check_sparse(name):
     if name in ["ap", "tt"] or name.startswith("ecfc") \
@@ -33,11 +34,13 @@ def accToWeights(acc):
 
 def createweightVector(weightData, isSparse):
     if (isSparse):
+        data = np.double(accToWeights(weightData['data']))
         weightVector = DataStructs.cDataStructs.MSVectorXdHelper.Create()
-        DataStructs.cDataStructs.MSVectorXdHelper.Map(weightVector, np.double(weightData['col']), np.double(accToWeights(weightData['data'])), len(np.double(accToWeights(weightData['data']))))
+        DataStructs.cDataStructs.MSVectorXdHelper.Map(weightVector, np.int64(weightData['col']), data, np.int64(len(data)))
     else:
+        data = sp.coo_matrix((accToWeights(weightData['data']), (weightData['row'], weightData['col'])), shape=weightData['shape']).todense().tolist()[0]
         weightVector = DataStructs.cDataStructs.MVectorXdHelper.Create()
-        DataStructs.cDataStructs.MVectorXdHelper.Map(weightVector, np.double(accToWeights(weightData['data'])), len(np.double(accToWeights(weightData['data']))))
+        DataStructs.cDataStructs.MVectorXdHelper.Map(weightVector, np.double(data), np.int64(len(data)))
     return weightVector
 
 def loadWeights(fpName):
@@ -75,6 +78,10 @@ def evaluate_similarity_method(dataset, resultsdir):
             for smol in d[1:]:
                 sfp = fpCalculator(smol)
                 tanimoto = DataStructs.WeightedTanimotoSimilarity(ref_fp, sfp, wv)
+                if tanimoto > 1 or tanimoto < 0:
+                    raise ValueError('tanimoto is not between 0 and 1')
+                if np.isnan(tanimoto):
+                    raise ValueError('tanimoto is nan')
                 tanimotos.append(tanimoto)
             label = fpName
             writer.write_result(label, tanimotos, i==0)
@@ -115,7 +122,8 @@ def get_rdkitmols(dataset):
         yield tmp
 
 def run_iteration(benchmark,M):
-    #print "\nITERATION %d\n" % M
+    if (M) % 100 == 0:
+        print "ITERATION %d, %s" % (M, time.asctime(time.localtime(time.time())))
     filename = os.path.join(benchmark, "dataset", "%d.txt" % M)
     dataset = list(readBenchmark(filename))
 
@@ -125,24 +133,29 @@ def run_iteration(benchmark,M):
     evaluate_similarity_method(d, os.path.join(benchmark, "similarities", str(M)))
 
 if __name__ == "__main__":
-    i = int(argv[1])
-    print local_location
+    benchmark = str(argv[1])
+    #print local_location
     flib.weightVectors = {}
-    for benchmark in ["SingleAssay", "MultiAssay"]:
-        # Note that the following loop is completely parallelisable
-        # e.g. you could run from 0->500 on one CPU and from 500->1000 on
-        #      another to finish in half the time
-        if not os.path.isdir(os.path.join(local_location, benchmark, "similarities")):
-            os.mkdir(os.path.join(local_location, benchmark, "similarities"))
-        #iters = range(1000);
-        #Parallel(n_jobs=num_cores)(delayed(run_iteration)(benchmark,i) for i in iters)
-        run_iteration(os.path.join(local_location, benchmark), i)
-        #for M in range(1000):
-        #    print "\nITERATION %d\n" % M
-        #    filename = os.path.join(benchmark, "dataset", "%d.txt" % M)
-        #    dataset = list(readBenchmark(filename))
-
-        #    d = []
-        #    for data in dataset:
-        #        d.append([chembl.smiles_lookup[x] for x in data])
-        #    evaluate_similarity_method(d, os.path.join(benchmark, "similarities", str(M)))
+    if not os.path.isdir(os.path.join(local_location, benchmark, "similarities")):
+        os.mkdir(os.path.join(local_location, benchmark, "similarities"))
+    iters = xrange(1000);
+    Parallel(n_jobs=num_cores)(delayed(run_iteration)(benchmark, i) for i in iters)
+    #for benchmark in ["SingleAssay", "MultiAssay"]:
+    # for benchmark in ["MultiAssay", "SingleAssay"]:
+    #     # Note that the following loop is completely parallelisable
+    #     # e.g. you could run from 0->500 on one CPU and from 500->1000 on
+    #     #      another to finish in half the time
+    #     if not os.path.isdir(os.path.join(local_location, benchmark, "similarities")):
+    #         os.mkdir(os.path.join(local_location, benchmark, "similarities"))
+    #     #iters = range(1000);
+    #     #Parallel(n_jobs=num_cores)(delayed(run_iteration)(benchmark,i) for i in iters)
+    #     run_iteration(os.path.join(local_location, benchmark), i)
+    #     #for M in range(1000):
+    #     #    print "\nITERATION %d\n" % M
+    #     #    filename = os.path.join(benchmark, "dataset", "%d.txt" % M)
+    #     #    dataset = list(readBenchmark(filename))
+    #
+    #     #    d = []
+    #     #    for data in dataset:
+    #     #        d.append([chembl.smiles_lookup[x] for x in data])
+    #     #    evaluate_similarity_method(d, os.path.join(benchmark, "similarities", str(M)))
