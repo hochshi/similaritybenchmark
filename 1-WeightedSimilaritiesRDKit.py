@@ -11,6 +11,7 @@ from rdkit import Chem, DataStructs
 import numpy as np
 import scipy.sparse as sp
 from sys import argv
+import time
 
 # Added for parallelism
 from joblib import Parallel, delayed
