@@ -17,8 +17,8 @@ from joblib import Parallel, delayed
 import multiprocessing
 num_cores = multiprocessing.cpu_count()-1
 
-#local_location = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
-local_location = '/Users/sh/Code/similaritybenchmark'
+local_location = os.path.abspath(os.path.dirname(os.path.realpath(__file__)))
+
 
 def check_sparse(name):
     if name in ["ap", "tt"] or name.startswith("ecfc") \
