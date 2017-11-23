@@ -49,9 +49,10 @@ def accfp(fpName, fpCalculator):
         row = [0] * len(col)
         acc = sparse.coo_matrix((data, (row, col)), shape=(1, max(col)*2)).tocsr()
     else:
-        max_col = 1024
-        if fpName.startswith("lecfp") or fpName.startswith("lfcfp") or fpName == "laval":
-            max_col = 16384
+        # max_col = 1024
+        # if fpName.startswith("lecfp") or fpName.startswith("lfcfp") or fpName == "laval":
+        #     max_col = 16384
+        max_col = init_fp.GetNumBits()
         acc = np.zeros(max_col)
         for i in init_fp.GetOnBits():
             acc[i] += 1
